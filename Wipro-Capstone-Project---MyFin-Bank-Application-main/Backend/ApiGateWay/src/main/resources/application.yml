@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: userservice
+          uri: lb://USERSERVICE
+          predicates:
+            - Path=/user/**
+        - id: adminservice
+          uri: lb://ADMINSERVICE
+          predicates:
+            - Path=/admin/**
+        - id: accountservice
+          uri: lb://ACCOUNTSERVICE
+          predicates:
+            - Path=/account/**
+        - id: supportservice
+          uri: lb://SUPPORTSERVICE
+          predicates:
+            - Path=/support/**
+          filters:
+            - StripPrefix=1
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
